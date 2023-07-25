@@ -236,6 +236,17 @@ def get_state_dict(state_dict):
 
 # https://pytorch.org/tutorials/beginner/saving_loading_models.html
 def get_infer_model(model, opt):
+    if opt.onnx:
+        model_save = model.module.eval().cpu()
+        x= torch.randn(1,1,224, 224)
+        torch.onnx.export(model,
+                  x,
+                # "vitstr_tiny.onnx",
+                opt.exp_name + ".onnx",
+                input_names=['image_cropped'],
+                output_names=['output'],
+                export_params=True
+                                )
     new_state_dict = get_state_dict(model.state_dict())
     model = JitModel(opt)
     model.load_state_dict(new_state_dict)
@@ -287,12 +298,13 @@ def test(opt):
         model.load_state_dict(torch.hub.load_state_dict_from_url(opt.saved_model, progress=True, map_location=device))
     else:
         model.load_state_dict(torch.load(opt.saved_model, map_location=device))
+    
     opt.exp_name = '_'.join(opt.saved_model.split('/')[1:])
     # print(model)
 
     if opt.infer_model is not None:
         get_infer_model(model, opt)
-        return
+        # return
 
     """ keep evaluation model and result logs """
     os.makedirs(f'./result/{opt.exp_name}', exist_ok=True)

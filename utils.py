@@ -240,6 +240,7 @@ def get_args(is_train=True):
     parser.add_argument('--flops', action='store_true', help='calculates approx flops (may not work)')
 
     # for train
+
     parser.add_argument('--exp_name', help='Where to store logs and models')
     parser.add_argument('--train_data', required=is_train, help='path to training dataset')
     parser.add_argument('--valid_data', required=is_train, help='path to validation dataset')
@@ -324,6 +325,7 @@ def get_args(is_train=True):
    
     parser.add_argument('--infer_model', type=str,
                         default=None, help='generate inference jit model')
+    parser.add_argument('--onnx',action='store_true', help='Whether to convert to onnx')                        
     parser.add_argument('--quantized', action='store_true', help='Model quantization')
     parser.add_argument('--static', action='store_true', help='Static model quantization')
     args = parser.parse_args()
